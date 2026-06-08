@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { usePolling } from "@/lib/use-polling";
 import { WidgetCard } from "@/app/widget-card";
 import { Badge } from "@/components/ui/badge";
 import { CheckSquare, ChevronDown, ChevronRight, Clock, Flame, Loader2 } from "lucide-react";
@@ -122,9 +123,6 @@ export function RoutineChecklistWidget() {
     }
   };
 
-  useEffect(() => {
-    fetchRoutines();
-  }, []);
 
   const toggleRoutine = async (routine: Routine) => {
     if (toggling.has(routine.id)) return;

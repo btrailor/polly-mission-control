@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
+import { usePolling } from "@/lib/use-polling";
 import { WidgetCard } from "@/app/widget-card";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -128,6 +129,9 @@ export function CalendarWidget() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  // Auto-refresh every 5 minutes
+  usePolling(fetchData, { interval: 300000 });
   const goPrev = () => setWeekOffset((o) => o - 1);
   const goNext = () => setWeekOffset((o) => o + 1);
   const goToday = () => setWeekOffset(0);

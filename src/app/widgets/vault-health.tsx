@@ -1,5 +1,6 @@
 "use client";
 
+import { usePolling } from "@/lib/use-polling";
 import { useState, useCallback } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
@@ -34,6 +35,9 @@ export function VaultHealthWidget() {
         lastSync: "2026-06-08T06:00:00Z",
         health: "healthy",
       });
+
+  // Auto-refresh every 30 seconds
+  usePolling(fetchData, { interval: 30000 });
     } finally {
       setLoading(false);
     }

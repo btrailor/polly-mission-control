@@ -1,5 +1,6 @@
 "use client";
 
+import { usePolling } from "@/lib/use-polling";
 import { useState, useCallback } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
@@ -35,6 +36,9 @@ export function ProjectKanbanWidget() {
       setLoading(false);
     }
   }, []);
+
+  // Auto-refresh every 30 seconds
+  usePolling(fetchData, { interval: 30000 });
 
   return (
     <>

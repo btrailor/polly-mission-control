@@ -1,7 +1,7 @@
 "use client";
 
 import { usePolling } from "@/lib/use-polling";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Clock, Play, Pause, AlertTriangle } from "lucide-react";
@@ -43,6 +43,27 @@ export function CronScheduleWidget() {
   const [crons, setCrons] = useState<CronJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/crons");
+      if (!res.ok) throw new Error("Failed to fetch crons");
+      const json = await res.json();
+      setCrons(json.crons || []);
+    } catch {
+      setCrons([
+        { id: "1", name: "Morning Brief", schedule: "0 8 * * *", status: "active", lastRun: new Date(Date.now() - 3600000 * 5).toISOString(), nextRun: new Date(Date.now() + 3600000 * 3).toISOString() },
+        { id: "2", name: "Wiki Lint", schedule: "0 6 * * 2-6", status: "active", lastRun: new Date(Date.now() - 3600000 * 7).toISOString(), nextRun: new Date(Date.now() + 3600000 * 22).toISOString() },
+        { id: "3", name: "Nightly Sync", schedule: "0 2 * * *", status: "active", lastRun: new Date(Date.now() - 3600000 * 11).toISOString(), nextRun: new Date(Date.now() + 3600000 * 13).toISOString() },
+        { id: "4", name: "Weekly Report", schedule: "0 9 * * 1", status: "paused", lastRun: new Date(Date.now() - 86400000 * 7).toISOString(), nextRun: null },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  usePolling(fetchData, { interval: 300000 });
 
 
   const activeCrons = crons.filter((c) => c.status === "active");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { usePolling } from "@/lib/use-polling";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Activity, Server, Database, Wifi, Cpu, HardDrive } from "lucide-react";
@@ -61,6 +62,9 @@ export function SystemStatusWidget() {
       setLoading(false);
     }
   }, []);
+
+  // Auto-refresh every 30 seconds
+  usePolling(fetchData, { interval: 30000 });
 
   const config = data ? STATUS_CONFIG[data.overall] : STATUS_CONFIG.online;
 
