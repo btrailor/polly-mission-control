@@ -12,6 +12,7 @@ import { VaultHealthWidget } from "./widgets/vault-health";
 import { CronScheduleWidget } from "./widgets/cron-schedule";
 import { QuickActionsWidget } from "./widgets/quick-actions";
 import { SystemStatusWidget } from "./widgets/system-status";
+import { AttentionQueueWidget } from "./widgets/attention-queue";
 import {
   Users,
   CheckSquare,
@@ -58,6 +59,7 @@ export function Overview() {
         <CronScheduleWidget />
         <QuickActionsWidget />
         <SystemStatusWidget />
+        <AttentionQueueWidget />
       </div>
     </div>
   );
