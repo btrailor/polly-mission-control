@@ -16,8 +16,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const BASE_PATH = "/polly-mission-control";
-
 const navItems = [
   { label: "Overview", href: "/", icon: LayoutDashboard },
   { label: "Agents", href: "/agents", icon: Users },
@@ -27,10 +25,6 @@ const navItems = [
   { label: "Activity", href: "/activity", icon: Activity },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
-
-function getHref(path: string): string {
-  return `${BASE_PATH}${path}`;
-}
 
 export function Sidebar() {
   const { sidebarCollapsed, setSidebarCollapsed } = useTheme();
@@ -58,12 +52,11 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 py-3 space-y-0.5 px-2">
         {navItems.map((item) => {
-          const fullHref = getHref(item.href);
-          const isActive = pathname === fullHref || pathname.startsWith(`${fullHref}/`);
+          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
             <Link
               key={item.href}
-              href={fullHref}
+              href={item.href}
               className={cn(
                 "flex items-center h-8 rounded-md text-sm transition-colors group",
                 sidebarCollapsed ? "justify-center px-0" : "px-2.5",
