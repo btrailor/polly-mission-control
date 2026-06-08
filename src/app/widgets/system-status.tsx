@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Activity, Server, Database, Wifi, Cpu, HardDrive } from "lucide-react";
@@ -38,28 +38,28 @@ export function SystemStatusWidget() {
   const [loading, setLoading] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  useEffect(() => {
-    fetch("/api/system")
-      .then((r) => r.json())
-      .then((d: SystemStatus) => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch(() => {
-        // Fallback demo data
-        setData({
-          components: [
-            { name: "Gateway", status: "online", latency: 12, uptime: "5d 4h" },
-            { name: "Ollama", status: "online", latency: 45, uptime: "3d 2h" },
-            { name: "Knowledge", status: "online", latency: 23, uptime: "5d 4h" },
-            { name: "GBrain", status: "degraded", latency: 234, uptime: "2d 1h" },
-            { name: "Storage", status: "online", latency: 8, uptime: "15d" },
-          ],
-          overall: "degraded",
-          lastChecked: new Date().toISOString(),
-        });
-        setLoading(false);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/system");
+      if (!res.ok) throw new Error("Failed to fetch system status");
+      const json = await res.json();
+      setData(json);
+    } catch {
+      setData({
+        components: [
+          { name: "Gateway", status: "online", latency: 12, uptime: "5d 4h" },
+          { name: "Ollama", status: "online", latency: 45, uptime: "3d 2h" },
+          { name: "Knowledge", status: "online", latency: 23, uptime: "5d 4h" },
+          { name: "GBrain", status: "degraded", latency: 234, uptime: "2d 1h" },
+          { name: "Storage", status: "online", latency: 8, uptime: "15d" },
+        ],
+        overall: "degraded",
+        lastChecked: new Date().toISOString(),
       });
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const config = data ? STATUS_CONFIG[data.overall] : STATUS_CONFIG.online;

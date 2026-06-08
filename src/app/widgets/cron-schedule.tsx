@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePolling } from "@/lib/use-polling";
+import { useState } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Clock, Play, Pause, AlertTriangle } from "lucide-react";
@@ -43,15 +44,6 @@ export function CronScheduleWidget() {
   const [loading, setLoading] = useState(true);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  useEffect(() => {
-    fetch("/api/crons")
-      .then((r) => r.json())
-      .then((d: { crons: CronJob[] }) => {
-        setCrons(d.crons);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
 
   const activeCrons = crons.filter((c) => c.status === "active");
 

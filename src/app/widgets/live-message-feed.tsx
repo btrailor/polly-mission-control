@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { usePolling } from "@/lib/use-polling";
+import { useState } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { MessageSquare } from "lucide-react";
@@ -34,12 +35,7 @@ export function LiveMessageFeedWidget() {
       })
       .catch(() => setLoading(false));
   };
-
-  useEffect(() => {
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 15000);
-    return () => clearInterval(interval);
-  }, []);
+  usePolling(fetchMessages, { interval: 30000 });
 
   const recent = messages.slice(0, 5);
 
