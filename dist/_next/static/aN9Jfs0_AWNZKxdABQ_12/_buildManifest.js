@@ -4,7 +4,7 @@ self.__BUILD_MANIFEST = {
     "beforeFiles": [
       {
         "source": "/./_next/:path+",
-        "destination": "/_next/:path+"
+        "destination": "/polly-mission-control/_next/:path+"
       }
     ],
     "fallback": []
