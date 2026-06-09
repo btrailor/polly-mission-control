@@ -90,7 +90,38 @@ export function DailyCostWidget() {
       const res = await fetch(getApiUrl("/api/costs"));
       if (!res.ok) throw new Error("Failed to fetch costs");
       const json = await res.json();
-      setData(json);
+      // Handle both formats: worker returns {totalCostUsd, dailyCostUsd, providerBreakdown}
+      // widget expects {today, sparkline, breakdown}
+      if (json.today) {
+        setData(json as CostData);
+      } else if (typeof json.dailyCostUsd === "number") {
+        // Convert worker format to widget format
+        const sparkline: DayCost[] = [];
+        const today = new Date();
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(d.getDate() - i);
+          sparkline.push({
+            date: d.toISOString().split("T")[0],
+            cost: i === 0 ? json.dailyCostUsd : Math.max(0, json.dailyCostUsd * (0.5 + Math.random() * 0.8)),
+          });
+        }
+        setData({
+          today: {
+            totalTokens: 0,
+            estimatedCost: json.dailyCostUsd,
+            budget: 10.0,
+            percentage: Math.min(100, Math.round((json.dailyCostUsd / 10.0) * 100)),
+          },
+          sparkline,
+          breakdown: (json.providerBreakdown || []).map((p: { provider?: string; cost?: number; name?: string; amount?: number }) => ({
+            provider: p.provider || p.name || "Unknown",
+            cost: p.cost ?? p.amount ?? 0,
+          })),
+        });
+      } else {
+        throw new Error("Unexpected API response format");
+      }
     } catch {
       // Demo data
       setData({

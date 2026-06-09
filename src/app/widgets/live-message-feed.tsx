@@ -30,8 +30,10 @@ export function LiveMessageFeedWidget() {
     setLoading(true);
     fetch(getApiUrl("/api/messages"))
       .then((r) => r.json())
-      .then((d: Message[]) => {
-        setMessages(d);
+      .then((d: { messages?: Message[] } | Message[]) => {
+        // Handle both formats: worker returns {messages: [...]} and direct array
+        const msgs = Array.isArray(d) ? d : d.messages || [];
+        setMessages(msgs);
         setLoading(false);
       })
       .catch(() => setLoading(false));
