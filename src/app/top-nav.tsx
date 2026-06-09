@@ -1,9 +1,11 @@
 "use client";
 
 import { useTheme } from "./theme-provider";
-import { Search, Bell, Moon, Sun, Menu, X } from "lucide-react";
+import { Search, Bell, HelpCircle, Menu, X } from "lucide-react";
+import { HelpModal } from "./help-modal";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 const themes = [
   { value: "linear", label: "Linear" },

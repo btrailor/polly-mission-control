@@ -182,7 +182,8 @@ export function CalendarWidget() {
           {loading ? (
             <SkeletonCalendar />
           ) : (
-            <div className="grid grid-cols-7 gap-1">
+            <div className="overflow-x-auto -mx-1 px-1 pb-1">
+              <div className="grid grid-cols-7 gap-1 min-w-[500px]">
               {/* Day headers */}
               {days.map((day, i) => (
                 <div
@@ -257,6 +258,7 @@ export function CalendarWidget() {
                   </div>
                 );
               })}
+            </div>
             </div>
           )}
 
