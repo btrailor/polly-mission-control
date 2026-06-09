@@ -33,6 +33,9 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          NEXT_PUBLIC_USE_WORKER: "true"
+          NEXT_PUBLIC_WORKER_URL: "https://openclaw-api.digitalartifacts.studio"
         run: npm run build
 
       - name: Setup Pages
