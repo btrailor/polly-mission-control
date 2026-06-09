@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "export",
   distDir: "dist",
-  assetPrefix: ".",
+  assetPrefix: "/polly-mission-control",
   basePath: "/polly-mission-control",
   env: {
     NEXT_PUBLIC_USE_WORKER: process.env.NEXT_PUBLIC_USE_WORKER || "true",
