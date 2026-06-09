@@ -26,7 +26,7 @@ export function ProjectKanbanWidget() {
       const res = await fetch(getApiUrl("/api/projects"));
       if (!res.ok) throw new Error("Failed to fetch projects");
       const json = await res.json();
-      setProjects(json || []);
+      setProjects(json.projects || []);
     } catch {
       setProjects([
         { id: "1", name: "Aleph Bees", status: "active", progress: 75, tasks: { done: 12, total: 16 } },

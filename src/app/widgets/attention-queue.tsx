@@ -5,6 +5,7 @@ import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { AlertTriangle, AlertCircle, Info, Clock, Flame, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api-config";
 
 interface AttentionItem {
   id: string;
@@ -84,7 +85,7 @@ export function AttentionQueueWidget() {
   const [detailOpen, setDetailOpen] = useState(false);
 
   useEffect(() => {
-    fetch("/api/attention")
+    fetch(getApiUrl("/api/attention"))
       .then((r) => r.json())
       .then((d: AttentionData) => {
         setData(d);
