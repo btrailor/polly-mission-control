@@ -5,6 +5,7 @@ import { usePolling } from "@/lib/use-polling";
 import { WidgetCard } from "@/app/widget-card";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api-config";
 import { WidgetDetail } from "@/app/widget-detail";
 import { CalendarDetailContent } from "./calendar-detail";
 
@@ -121,7 +122,7 @@ export function CalendarWidget() {
 
   const fetchData = useCallback(() => {
     setLoading(true);
-    fetch("/api/calendar")
+    fetch(getApiUrl("/api/calendar"))
       .then((r) => r.json())
       .then((d: CalendarData) => {
         setData(d);

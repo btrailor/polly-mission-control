@@ -6,6 +6,7 @@ import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api-config";
 
 interface Message {
   id: string;
@@ -27,7 +28,7 @@ export function LiveMessageFeedWidget() {
 
   const fetchMessages = () => {
     setLoading(true);
-    fetch("/api/messages")
+    fetch(getApiUrl("/api/messages"))
       .then((r) => r.json())
       .then((d: Message[]) => {
         setMessages(d);

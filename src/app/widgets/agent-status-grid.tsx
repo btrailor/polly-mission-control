@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { getApiUrl } from "@/lib/api-config";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Badge } from "@/components/ui/badge";
@@ -161,7 +162,7 @@ function AgentCard({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border border-[var(--card-border)] bg-[var(--sidebar-bg)]/50 text-[var(--foreground)] hover:bg-[var(--sidebar-bg)] transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                fetch("/api/actions", {
+                fetch(getApiUrl("/api/actions"), {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ action: "spawn", agentId: agent.id }),
@@ -175,7 +176,7 @@ function AgentCard({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border border-[var(--card-border)] bg-[var(--sidebar-bg)]/50 text-[var(--foreground)] hover:bg-[var(--sidebar-bg)] transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
-                fetch("/api/actions", {
+                fetch(getApiUrl("/api/actions"), {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ action: "clearMemory", agentId: agent.id }),
@@ -234,7 +235,7 @@ export function AgentStatusGrid() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/agents")
+    fetch(getApiUrl("/api/agents"))
       .then((r) => r.json())
       .then((d: AgentsResponse) => {
         setData(d);

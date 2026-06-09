@@ -6,6 +6,7 @@ import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api-config";
 
 interface VaultHealth {
   totalNotes: number;
@@ -23,7 +24,7 @@ export function VaultHealthWidget() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/vault");
+      const res = await fetch(getApiUrl("/api/vault"));
       if (!res.ok) throw new Error("Failed to fetch vault health");
       const json = await res.json();
       setData(json);

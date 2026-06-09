@@ -6,6 +6,7 @@ import { WidgetCard } from "@/app/widget-card";
 import { Badge } from "@/components/ui/badge";
 import { CheckSquare, ChevronDown, ChevronRight, Clock, Flame, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api-config";
 import { WidgetDetail } from "@/app/widget-detail";
 import { RoutineChecklistDetailContent } from "./routine-checklist-detail";
 
@@ -101,7 +102,7 @@ export function RoutineChecklistWidget() {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch("/api/routines");
+      const res = await fetch(getApiUrl("/api/routines"));
       if (!res.ok) throw new Error("Failed to fetch");
       const json: RoutineData = await res.json();
       setData(json);
@@ -154,7 +155,7 @@ export function RoutineChecklistWidget() {
     });
 
     try {
-      const res = await fetch("/api/routines", {
+      const res = await fetch(getApiUrl("/api/routines"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: routine.id, completed: newCompleted }),

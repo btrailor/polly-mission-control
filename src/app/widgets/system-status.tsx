@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { usePolling } from "@/lib/use-polling";
+import { getApiUrl } from "@/lib/api-config";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { Activity, Server, Database, Wifi, Cpu, HardDrive } from "lucide-react";
@@ -42,7 +43,7 @@ export function SystemStatusWidget() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/system");
+      const res = await fetch(getApiUrl("/api/system"));
       if (!res.ok) throw new Error("Failed to fetch system status");
       const json = await res.json();
       setData(json);

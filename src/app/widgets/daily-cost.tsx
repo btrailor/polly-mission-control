@@ -6,6 +6,7 @@ import { WidgetDetail } from "@/app/widget-detail";
 import { DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePolling } from "@/lib/use-polling";
+import { getApiUrl } from "@/lib/api-config";
 
 interface DayCost {
   date: string;
@@ -86,7 +87,7 @@ export function DailyCostWidget() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/costs");
+      const res = await fetch(getApiUrl("/api/costs"));
       if (!res.ok) throw new Error("Failed to fetch costs");
       const json = await res.json();
       setData(json);

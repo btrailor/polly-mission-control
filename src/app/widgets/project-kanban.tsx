@@ -5,6 +5,7 @@ import { useState, useCallback } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
 import { FolderKanban } from "lucide-react";
+import { getApiUrl } from "@/lib/api-config";
 
 interface Project {
   id: string;
@@ -22,7 +23,7 @@ export function ProjectKanbanWidget() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/projects");
+      const res = await fetch(getApiUrl("/api/projects"));
       if (!res.ok) throw new Error("Failed to fetch projects");
       const json = await res.json();
       setProjects(json || []);

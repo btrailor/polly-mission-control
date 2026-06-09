@@ -1,6 +1,7 @@
 "use client";
 
 import { usePolling } from "@/lib/use-polling";
+import { getApiUrl } from "@/lib/api-config";
 import { useState, useCallback } from "react";
 import { WidgetCard } from "@/app/widget-card";
 import { WidgetDetail } from "@/app/widget-detail";
@@ -47,7 +48,7 @@ export function CronScheduleWidget() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/crons");
+      const res = await fetch(getApiUrl("/api/crons"));
       if (!res.ok) throw new Error("Failed to fetch crons");
       const json = await res.json();
       setCrons(json.crons || []);
