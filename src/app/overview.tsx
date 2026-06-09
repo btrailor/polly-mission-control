@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { WidgetCard } from "./widget-card";
 import { cn } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api-config";
 import { DailyCostWidget } from "./widgets/daily-cost";
 import { RoutineChecklistWidget } from "./widgets/routine-checklist";
 import { CalendarWidget } from "./widgets/calendar-widget";
@@ -20,7 +22,75 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
+interface StatsData {
+  activeAgents: number;
+  totalAgents: number;
+  tasksDone: number;
+  tasksTotal: number;
+  dailyCost: number;
+  alerts: number;
+}
+
+function useStats() {
+  const [stats, setStats] = useState<StatsData>({
+    activeAgents: 0,
+    totalAgents: 0,
+    tasksDone: 0,
+    tasksTotal: 0,
+    dailyCost: 0,
+    alerts: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [agentsRes, costsRes, attentionRes] = await Promise.all([
+          fetch(getApiUrl("/api/agents")),
+          fetch(getApiUrl("/api/costs")),
+          fetch(getApiUrl("/api/attention")),
+        ]);
+
+        const agents = agentsRes.ok ? await agentsRes.json() : { agents: [] };
+        const costs = costsRes.ok ? await costsRes.json() : { today: { estimatedCost: 0 } };
+        const attention = attentionRes.ok ? await attentionRes.json() : { items: [] };
+
+        const activeAgents = agents.agents?.filter((a: any) => a.status === "running").length || 0;
+        const totalAgents = agents.agents?.length || 0;
+
+        setStats({
+          activeAgents,
+          totalAgents,
+          tasksDone: 0, // TODO: derive from tasks endpoint
+          tasksTotal: 0,
+          dailyCost: costs.today?.estimatedCost || 0,
+          alerts: attention.items?.length || 0,
+        });
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return { stats, loading };
+}
+
 export function Overview() {
+  const { stats, loading } = useStats();
+
+  const statItems = [
+    { label: "Active Agents", value: loading ? "—" : `${stats.activeAgents}/${stats.totalAgents}`, icon: Users, color: "text-blue-400" },
+    { label: "Tasks Today", value: loading ? "—" : `${stats.tasksDone}/${stats.tasksTotal || "—"}`, icon: CheckSquare, color: "text-emerald-400" },
+    { label: "Daily Cost", value: loading ? "—" : `$${stats.dailyCost.toFixed(2)}`, icon: DollarSign, color: "text-amber-400" },
+    { label: "Alerts", value: loading ? "—" : String(stats.alerts), icon: AlertTriangle, color: "text-red-400" },
+  ];
+
   return (
     <div className="p-6">
       <div className="mb-6">
@@ -29,12 +99,7 @@ export function Overview() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        {[
-          { label: "Active Agents", value: "65", icon: Users, color: "text-blue-400" },
-          { label: "Tasks Today", value: "12/24", icon: CheckSquare, color: "text-emerald-400" },
-          { label: "Daily Cost", value: "$2.34", icon: DollarSign, color: "text-amber-400" },
-          { label: "Alerts", value: "3", icon: AlertTriangle, color: "text-red-400" },
-        ].map((stat) => (
+        {statItems.map((stat) => (
           <div
             key={stat.label}
             className="rounded-lg border border-[var(--card-border)] bg-[var(--card-bg)] p-4"
@@ -43,7 +108,9 @@ export function Overview() {
               <stat.icon className={cn("size-4", stat.color)} />
               <span className="text-xs text-[var(--muted)]">{stat.label}</span>
             </div>
-            <div className="text-2xl font-bold">{stat.value}</div>
+            <div className={cn("text-2xl font-bold", loading && "opacity-50")}>
+              {stat.value}
+            </div>
           </div>
         ))}
       </div>
