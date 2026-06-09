@@ -3,6 +3,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./theme-provider";
+import { DemoIndicator } from "./demo-indicator";
 import { Sidebar } from "./sidebar";
 import { TopNav } from "./top-nav";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
               <TopNav />
               <main className="flex-1 overflow-auto">
                 {children}
+                <DemoIndicator />
               </main>
             </div>
           </div>
